@@ -1,8 +1,6 @@
-# frozen_string_literal: true
+# environment
 
 require_relative "nyt_cli/version"
-
-module NytCli
-  class Error < StandardError; end
-  # Your code goes here...
-end
+require_relative './nyt_cli/cli.rb'
+require_relative './nyt_cli/book.rb'
+require_relative './nyt_cli/api.rb'
