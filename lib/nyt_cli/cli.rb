@@ -32,7 +32,7 @@ class NytCli::Cli
     def get_date
         puts "The first published online NYT Bestsellers list was on 2011-02-13.\nTo get started, please enter a date (YYYY-MM-DD):".yellow
         date = gets.chomp
-        if valid_time?(date)
+        if valid_date?(date) && valid_timeframe?(date)
             create_api_and_book(date)
         end
     end
@@ -51,7 +51,8 @@ class NytCli::Cli
     #     binding.pry
     # end
 
-    def valid_time?(date)
+    ## Checks if date is real and in the correct format
+    def valid_date?(date)
         Date.valid_date? *"#{Date.strptime(date,"%Y-%m-%d")}".split('-').map(&:to_i) 
         rescue 
             puts "\n#{@@emojis[0]} Oops! That input is invalid. Please input a valid date using YYYY-MM-DD #{@@emojis[0]}\n".red
@@ -59,33 +60,19 @@ class NytCli::Cli
             get_date
     end
 
-    ## Checks to make sure the date is an actual date, and that it fits the criteria for the API call (format and start date)
-    # def valid?(date)
-    #     y = date.split("-")[0].to_i
-    #     m = date.split("-")[1].to_i
-    #     d = date.split("-")[2].to_i
-    #     new_date = Time.new(y, m, d)
-    #     nyt_start_date = Time.new(2011, 2, 13)
-    #     valid_format = date.match(/\d{4}-\d{2}-\d{2}/)
+    ## Checks to make sure the date is between the NYT start date, and the current date
+    def valid_timeframe?(date)
+        new_date = Time.new(date.split("-")[0].to_i, date.split("-")[1].to_i, date.split("-")[2].to_i)
+        nyt_start_date = Time.new(2011, 2, 13)
 
-
-
-
-        #valid_time = DateTime.parse date
-        # valid_time = Date.strptime(date, '%Y-%m-%d') rescue false
-        #date == 'never'
-        # if valid_format && new_date <= Time.now && new_date >= nyt_start_date && (Date.valid_date?(y,m,d) rescue false)
-        #     true
-        #     binding.pry
-        # else
-        #     puts "\n#{@@emojis[0]} Oops! That input is invalid. Please input a valid date using YYYY-MM-DD #{@@emojis[0]}\n".red
-        #     sleep(1)
-        #     get_date
-        # end
-
-    # end
-    
-
+        if new_date <= Time.now && new_date >= nyt_start_date
+            true
+        else
+            puts "\n#{@@emojis[0]} Oops! That input is invalid. Make sure your date falls between now and 2011-01-13 #{@@emojis[0]}\n".red
+            sleep(1)
+            get_date
+        end
+    end
 
     ## creates the new API call, initialized with validated input date. Once called, asks user for input
     def create_api_and_book(date)
