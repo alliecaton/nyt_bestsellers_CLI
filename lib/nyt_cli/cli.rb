@@ -6,15 +6,15 @@ class NytCli::Cli
 
     ## Kickstarts the CLI 
     def call
-        puts "#{@@emojis[1]} Welcome to the New York Times Bestseller List CLI. Within this CLI, you will be able to view the books on the NYT Bestselling Fiction list for a given date starting from 2011, when they moved their Bestsellers publication online. #{@@emojis[1]} \n\n".cyan.bold.center(100)
+        puts "\n\n#{@@emojis[1]} Welcome to the New York Times Bestseller List CLI. Within this CLI, you will be able to view the books on the NYT Bestselling Fiction list for a given date. #{@@emojis[1]} \n\n".cyan.bold.center(100)
         ask_input
     end
 
     ## Asks for initial user input
     def ask_input 
-        puts "Please choose an option by entering a number:"
+        puts "\n\nPlease choose an option by entering a number:\n\n"
         puts "[1]  ".green + "Get fiction bestsellers list for a given date"
-        puts "[2]  ".green + "Check if a book has ever appeared on a fiction bestsellers list"
+        puts "[2]  ".green + "View your saved books"
         puts "[3]  ".green + "Exit the application\n\n"
         input = gets.chomp.downcase.strip
 
@@ -22,45 +22,23 @@ class NytCli::Cli
         when "1"
             get_date
         when "2"
-            enter_book
+            view_saved
         when "3"
             exit! 
         else
-            puts "\ #{@@emojis[0]} Please enter the number that corresponds with what you would like to do. #{@@emojis[0]}\n".red
+            puts "\n#{@@emojis[0]} Please enter the number that corresponds with what you would like to do. #{@@emojis[0]}\n".red
             sleep(1)
             call
         end
     end
 
-
     ## Get user date they would like to view 
     def get_date
-        puts "The first published online NYT Bestsellers list was on 2011-02-13.\nTo get started, please enter a date (YYYY-MM-DD):".yellow
+        puts "\nThe first published online NYT Bestsellers list was on 2011-02-13.\nTo get started, please enter a date (YYYY-MM-DD):\n".yellow
         date = gets.chomp
         if valid_date?(date) && valid_timeframe?(date)
             create_api_and_book(date)
-        end
-    end
-
-    ## User enters name of book they would like to search for 
-    def enter_book
-        puts "To get started, please enter the name of a book:\n".yellow
-        title = gets.chomp.strip.upcase
-        NytCli::HistoryApi.new(title)
-        check_book_existence(title)
-        # create_new_from_history
-    end
-
-    ## Checks if a book exists and puts out a response 
-    def check_book_existence(title)
-        if NytCli::Book.find_by_title(title)
-            current_book = NytCli::Book.find_by_title(title)
-            list = NytCli::Book.list_name_from_history(current_book)
-            rank = NytCli::Book.rank_name_from_history(current_book)
-            puts "\n#{current_book.title} appeared on the NYT Bestsellers list on #{list} with a rank of #{rank}\n\n"
-        else
-            puts "\n#{title.downcase.split(/ |\_|\-/).map(&:capitalize)} does not appear on the NYT Bestsellers list\n\n"
-            ask_input
+            @@viewed_dates << date
         end
     end
 
@@ -89,6 +67,7 @@ class NytCli::Cli
 
     ## creates the new API call, initialized with validated input date. Once called, asks user for input
     def create_api_and_book(date)
+        NytCli::Book.reset!
         api= NytCli::Api.new(date)
         ask
     end
@@ -100,8 +79,13 @@ class NytCli::Cli
         puts "\nPlease enter the number that corresponds to the book you would like to view\n".yellow
         num = gets.chomp.to_i
         puts "\n"
-        show_book(num)
-        num
+        if num.between?(1,15)
+            show_book(num)
+        else
+            puts "#{@@emojis[0]} Please input a valid number #{@@emojis[0]}"
+            sleep(1)
+            ask
+        end
     end
 
     ## List all books
@@ -111,29 +95,56 @@ class NytCli::Cli
         end
     end
 
-    ## Shows attributes of individaul book after selected by user, saves the user choice into class array @@all_selected for easy access
-    def show_book(num)
-        chosen_book = NytCli::Book.all[num - 1]
-        NytCli::Book.all_viewed << chosen_book
-        puts "Title: ".blue + "#{chosen_book.title.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")} \n" + "Author: ".blue + "#{chosen_book.author}" + " \nRank: ".blue + "#{chosen_book.rank}" + " \nDescription: ".blue + "#{chosen_book.description}\n\n"
-        indiv_book_menu
-        chosen_book
+    ## View saved collection for session if your collection count is greater than 0
+    def view_saved
+        if  NytCli::Book.collection.count != 0
+             NytCli::Book.collection.each.with_index(1) do |book,index|
+                puts "\n[#{index}]  ".green + "#{book.title.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")} - #{book.author}".white
+                collection_options
+             end
+        else 
+            puts "\n#{@@emojis[0]} You have no saved books #{@@emojis[0]}\n\n"
+            sleep(1)
+            ask_input
+        end
     end
 
-    ## Menu choices for individual book 
-    def indiv_book_menu
+    def collection_options
+        puts "\n\nIf you would like more information on any of your saved books, input the number associated with the book you would like to view"
+        input = gets.chomp.to_i
+        show_from_collection(input)
+        # puts "Would you like your saved collection emailed to you? y/n"
+        # input = gets.chomp
+
+        # case input 
+        # when "y"
+        #     email
+        # end
+    end
+
+    def show_from_collection(num)
+        chosen_book = NytCli::Book.collection[num - 1]
+        NytCli::Book.all_viewed << chosen_book
+        puts "Title: ".blue + "#{chosen_book.title.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")} \n" + "Author: ".blue + "#{chosen_book.author}" + " \nRank: ".blue + "#{chosen_book.rank}" + " \nDescription: ".blue + "#{chosen_book.description}\n\n"
+        from_collection_menu
+    end 
+
+    def from_collection_menu
         puts "What would you like to do? Please input a number\n\n"
-        puts "[1]  ".green + "Select another book from the list"
+        puts "[1]  ".green + "Return to your collection"
         puts "[2]  ".green + "Buy book"
-        puts "[3]  ".green + "Exit the application\n\n"
+        puts "[3]  ".green + "Return to main menu"
+        puts "[4]  ".green + "Exit the application\n\n"
         input = gets.chomp.downcase.strip
 
         case input 
         when "1"
-            ask
+            view_saved
         when "2"
             buy_book
-        when "3"
+        when "4"
+            puts "Goodbye!"
+            sleep(1)
             exit! 
         else
             puts "\ #{@@emojis[0]} Please enter the number that corresponds with what you would like to do. #{@@emojis[0]}\n".red
@@ -142,13 +153,60 @@ class NytCli::Cli
         end
     end
 
-    def buy_book
-        current_book = NytCli::Book.all_viewed.last
+    ## Shows attributes of individaul book after selected by user, saves the user choice into class array @@all_selected for easy access
+    def show_book(num)
+        chosen_book = NytCli::Book.all[num - 1]
+        NytCli::Book.all_viewed << chosen_book
+        puts "Title: ".blue + "#{chosen_book.title.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")} \n" + "Author: ".blue + "#{chosen_book.author}" + " \nRank: ".blue + "#{chosen_book.rank}" + " \nDescription: ".blue + "#{chosen_book.description}\n\n"
+        indiv_book_menu
+    end
+
+    ## Menu choices for individual book 
+    def indiv_book_menu
+        puts "What would you like to do? Please input a number\n\n"
+        puts "[1]  ".green + "Select another book from the list"
+        puts "[2]  ".green + "Buy book"
+        puts "[3]  ".green + "Add book to session collection"
+        puts "[4]  ".green + "Return to main menu"
+        puts "[5]  ".green + "Exit the application\n\n"
+        input = gets.chomp.downcase.strip
+
+        case input 
+        when "1"
+            self.ask
+        when "2"
+            buy_book(NytCli::Book.all_viewed.last.title)
+        when "3"
+            add_to_collection
+        when "4"
+            ask_input
+        when "5"
+            puts "Goodbye!"
+            sleep(1)
+            exit! 
+        else
+            puts "\ #{@@emojis[0]} Please enter the number that corresponds with what you would like to do. #{@@emojis[0]}\n".red
+            sleep(1)
+            indiv_book_menu
+        end
+    end
+
+    def buy_book(title)
+        # current_book = NytCli::Book.all_viewed.last
+        current_book = NytCli::Book.find_by_title (title)
         current_book.buy_links.each do |shop|
             if shop["url"].include? "barnes"
                 Launchy.open(shop["url"])
+                self.ask
             end 
         end 
+    end
+
+    def add_to_collection
+        NytCli::Book.collection << NytCli::Book.all_viewed.last
+        puts "\nYou've added " + "#{NytCli::Book.all_viewed.last.title.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")} ".blue + "to your saved collection for the session.\n\n"
+        sleep(2)
+        self.ask
     end
 
 
