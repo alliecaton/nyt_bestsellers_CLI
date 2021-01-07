@@ -7,6 +7,11 @@ class NytCli::Cli
     ## Kickstarts the CLI 
     def call
         puts "#{@@emojis[1]} Welcome to the New York Times Bestseller List CLI. Within this CLI, you will be able to view the books on the NYT Bestselling Fiction list for a given date starting from 2011, when they moved their Bestsellers publication online. #{@@emojis[1]} \n\n".cyan.bold.center(100)
+        ask_input
+    end
+
+    ## Asks for initial user input
+    def ask_input 
         puts "Please choose an option by entering a number:"
         puts "[1]  ".green + "Get fiction bestsellers list for a given date"
         puts "[2]  ".green + "Check if a book has ever appeared on a fiction bestsellers list"
@@ -16,8 +21,8 @@ class NytCli::Cli
         case input 
         when "1"
             get_date
-        # when "2"
-        #     enter_book
+        when "2"
+            enter_book
         when "3"
             exit! 
         else
@@ -37,19 +42,27 @@ class NytCli::Cli
         end
     end
 
-    # def enter_book
-    #     puts "To get started, please enter the name of a book:\n".yellow
-    #     title = gets.chomp.strip.upcase
-    #     NytCli::Scraper.new(title)
-    #     title
-    #     # create_new_from_history
-    # end
+    ## User enters name of book they would like to search for 
+    def enter_book
+        puts "To get started, please enter the name of a book:\n".yellow
+        title = gets.chomp.strip.upcase
+        NytCli::HistoryApi.new(title)
+        check_book_existence(title)
+        # create_new_from_history
+    end
 
-    # def create_new_from_history
-    #     title = enter_book
-    #     NytCli::Book.find_by_title(title)
-    #     binding.pry
-    # end
+    ## Checks if a book exists and puts out a response 
+    def check_book_existence(title)
+        if NytCli::Book.find_by_title(title)
+            current_book = NytCli::Book.find_by_title(title)
+            list = NytCli::Book.list_name_from_history(current_book)
+            rank = NytCli::Book.rank_name_from_history(current_book)
+            puts "\n#{current_book.title} appeared on the NYT Bestsellers list on #{list} with a rank of #{rank}\n\n"
+        else
+            puts "\n#{title.downcase.split(/ |\_|\-/).map(&:capitalize)} does not appear on the NYT Bestsellers list\n\n"
+            ask_input
+        end
+    end
 
     ## Checks if date is real and in the correct format
     def valid_date?(date)
