@@ -12,9 +12,9 @@ class NytCli::Cli
     ## Asks for initial user input
     def ask_input 
         puts "\n\nPlease choose an option by entering a number:\n\n"
-        puts "[1]  ".green + "Get fiction bestsellers list for a given date"
-        puts "[2]  ".green + "View your saved books"
-        puts "[3]  ".green + "Exit the application\n\n"
+        puts "[1]  ".yellow + "Get fiction bestsellers list for a given date"
+        puts "[2]  ".yellow + "View your saved books"
+        puts "[3]  ".yellow + "Exit the application\n\n"
         input = gets.chomp.downcase.strip
 
         case input 
@@ -24,6 +24,8 @@ class NytCli::Cli
             puts "\n"
             view_saved
         when "3"
+            puts "Goodbye! #{@@emojis[2]}"
+            sleep(1)
             exit! 
         else
             puts "\n#{@@emojis[0]} Please enter the number that corresponds with what you would like to do. #{@@emojis[0]}\n".red
@@ -125,10 +127,10 @@ class NytCli::Cli
 
     def from_collection_menu
         puts "What would you like to do? Please input a number\n\n"
-        puts "[1]  ".green + "Return to your collection"
-        puts "[2]  ".green + "Buy book"
-        puts "[3]  ".green + "Return to main menu"
-        puts "[4]  ".green + "Exit the application\n\n"
+        puts "[1]  ".yellow + "Return to your collection"
+        puts "[2]  ".yellow + "Buy book"
+        puts "[3]  ".yellow + "Return to main menu"
+        puts "[4]  ".yellow + "Exit the application\n\n"
         input = gets.chomp.downcase.strip
 
         case input 
@@ -160,11 +162,11 @@ class NytCli::Cli
     ## Menu choices for individual book 
     def indiv_book_menu
         puts "What would you like to do? Please input a number\n\n"
-        puts "[1]  ".green + "Select another book from the list"
-        puts "[2]  ".green + "Buy book"
-        puts "[3]  ".green + "Add book to session collection"
-        puts "[4]  ".green + "Return to main menu"
-        puts "[5]  ".green + "Exit the application\n\n"
+        puts "[1]  ".yellow + "Select another book from the list"
+        puts "[2]  ".yellow + "Buy book"
+        puts "[3]  ".yellow + "Add book to session collection"
+        puts "[4]  ".yellow + "Return to main menu"
+        puts "[5]  ".yellow + "Exit the application\n\n"
         input = gets.chomp.downcase.strip
 
         case input 
@@ -194,7 +196,7 @@ class NytCli::Cli
         current_book.buy_links.each do |shop|
             if shop["url"].include? "barnes"
                 Launchy.open(shop["url"])
-                self.ask_input
+                self.ask
             end 
         end 
     end
@@ -204,7 +206,7 @@ class NytCli::Cli
         NytCli::Book.collection << NytCli::Book.all_viewed.last
         puts "\nYou've added " + "#{NytCli::Book.all_viewed.last.title.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")} ".blue + "to your saved collection for the session.\n\n"
         sleep(1)
-        self.ask
+        self.ask_input
     end
 
 
