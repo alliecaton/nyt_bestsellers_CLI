@@ -1,12 +1,16 @@
 class NytCli::Cli
 
-
 @@emojis= ["🚨", "📚", "👋"]
 
     ## Kickstarts the CLI 
+
+    def start
+        call
+        ask_input
+    end
+
     def call
         puts "\n\n#{@@emojis[1]} Welcome to the New York Times Bestseller List CLI. Within this CLI, you will be able to view the books on the NYT Bestselling Fiction list for a given date. #{@@emojis[1]} \n\n".cyan.bold.center(100)
-        ask_input
     end
 
     ## Asks for initial user input
@@ -191,12 +195,11 @@ class NytCli::Cli
 
     ## Links out to a B&N link for selected book 
     def buy_book(title)
-        # current_book = NytCli::Book.all_viewed.last
         current_book = NytCli::Book.find_by_title (title)
         current_book.buy_links.each do |shop|
             if shop["url"].include? "barnes"
                 Launchy.open(shop["url"])
-                self.ask
+                self.ask_input
             end 
         end 
     end
