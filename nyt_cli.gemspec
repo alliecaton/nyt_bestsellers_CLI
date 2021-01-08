@@ -30,7 +30,6 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "colorize"
-  spec.add_dependency "colorized_string"
   spec.add_dependency "launchy"
 
 

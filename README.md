@@ -7,11 +7,11 @@ Welcome to your new gem! In this directory, you'll find the files you need to be
 
 ## Installation
 
-Add this line to your application's Gemfile:
+<!-- Add this line to your application's Gemfile:
 
 ```ruby
 gem 'nyt_cli'
-```
+``` -->
 
 And then execute:
 

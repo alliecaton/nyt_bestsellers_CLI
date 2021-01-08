@@ -3,7 +3,6 @@
 require 'date'
 require 'time'
 require 'colorize'
-require 'colorized_string'
 require 'dotenv/load'
 require 'pry'
 require 'launchy'

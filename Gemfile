@@ -11,5 +11,4 @@ gem "rspec", "~> 3.0"
 
 gem "rubocop", "~> 0.80"
 
-# ruby
-# gem 'nyt_cli'
+# gem "nyt_cli"
