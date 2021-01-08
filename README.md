@@ -21,6 +21,9 @@ To install, run:
 
     $ gem install nyt_cli
 
+Navigate to the gem and run: 
+
+    $ ./bin/nyt-books
 ## Usage
 
 Use NytCLI to retrieve information about fiction books on the New York Times Bestsellers list for a given date! 
