@@ -2,7 +2,7 @@
 class NytCli::Cli
 
 
-@@emojis= ["🚨", "📚"]
+@@emojis= ["🚨", "📚", "👋"]
 
     ## Kickstarts the CLI 
     def call
@@ -79,7 +79,7 @@ class NytCli::Cli
         puts "\nPlease enter the number that corresponds to the book you would like to view\n".yellow
         num = gets.chomp.to_i
         puts "\n"
-        if num.between?(1,15)
+        if num.between?(1,NytCli::Book.all.count)
             show_book(num)
         else
             puts "#{@@emojis[0]} Please input a valid number #{@@emojis[0]}"
@@ -98,7 +98,8 @@ class NytCli::Cli
     ## View saved collection for session if your collection count is greater than 0
     def view_saved
         if  NytCli::Book.collection.count != 0
-             NytCli::Book.collection.each.with_index(1) do |book,index|
+             NytCli::Book.collection.uniq.each.with_index(1) do |book,index|
+                binding.pry
                 puts "\n[#{index}]  ".green + "#{book.title.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")} - #{book.author}".white
                 collection_options
              end
@@ -112,14 +113,9 @@ class NytCli::Cli
     def collection_options
         puts "\n\nIf you would like more information on any of your saved books, input the number associated with the book you would like to view"
         input = gets.chomp.to_i
-        show_from_collection(input)
-        # puts "Would you like your saved collection emailed to you? y/n"
-        # input = gets.chomp
-
-        # case input 
-        # when "y"
-        #     email
-        # end
+        if num.between?(1,NytCli::Book.collection.count)
+            show_from_collection(input)
+        end
     end
 
     def show_from_collection(num)
@@ -141,15 +137,17 @@ class NytCli::Cli
         when "1"
             view_saved
         when "2"
-            buy_book
+            buy_book(NytCli::Book.all_viewed.last.title)
+        when "3"
+            ask_input
         when "4"
-            puts "Goodbye!"
+            puts "Goodbye! #{@@emojis[2]}"
             sleep(1)
             exit! 
         else
-            puts "\ #{@@emojis[0]} Please enter the number that corresponds with what you would like to do. #{@@emojis[0]}\n".red
+            puts "\n #{@@emojis[0]} Please enter the number that corresponds with what you would like to do. #{@@emojis[0]}\n".red
             sleep(1)
-            indiv_book_menu
+            from_collection_menu
         end
     end
 
@@ -181,7 +179,7 @@ class NytCli::Cli
         when "4"
             ask_input
         when "5"
-            puts "Goodbye!"
+            puts "Goodbye! #{@@emojis[2]}"
             sleep(1)
             exit! 
         else
@@ -197,7 +195,7 @@ class NytCli::Cli
         current_book.buy_links.each do |shop|
             if shop["url"].include? "barnes"
                 Launchy.open(shop["url"])
-                self.ask
+                self.ask_input
             end 
         end 
     end

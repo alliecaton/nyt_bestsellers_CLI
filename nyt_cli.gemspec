@@ -5,7 +5,7 @@ require_relative "lib/nyt_cli/version"
 Gem::Specification.new do |spec|
   spec.name          = "nyt_cli"
   spec.version       = NytCli::VERSION
-  spec.authors       = ["Allie"]
+  spec.authors       = ["Allie Caton"]
   spec.email         = ["alliecaton3@gmail.com"]
 
   spec.summary       = "TODO: Write a short summary, because RubyGems requires one."
