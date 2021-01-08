@@ -1,4 +1,3 @@
-
 class NytCli::Cli
 
 
@@ -29,7 +28,7 @@ class NytCli::Cli
         else
             puts "\n#{@@emojis[0]} Please enter the number that corresponds with what you would like to do. #{@@emojis[0]}\n".red
             sleep(1)
-            call
+            ask_input
         end
     end
 
@@ -55,11 +54,10 @@ class NytCli::Cli
     def valid_timeframe?(date)
         new_date = Time.new(date.split("-")[0].to_i, date.split("-")[1].to_i, date.split("-")[2].to_i)
         nyt_start_date = Time.new(2011, 2, 13)
-
         if new_date <= Time.now && new_date >= nyt_start_date
             true
         else
-            puts "\n#{@@emojis[0]} Oops! That input is invalid. Make sure your date falls between now and 2011-01-13 #{@@emojis[0]}\n".red
+            puts "\n#{@@emojis[0]} Oops! That input is invalid. Make sure your date falls between now and 2011-02-13 #{@@emojis[0]}\n".red
             sleep(1)
             get_date
         end

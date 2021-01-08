@@ -1,5 +1,3 @@
-
-Dotenv.load
 class NytCli::Api
 
     attr_accessor :date
@@ -11,13 +9,11 @@ class NytCli::Api
 
     ## Calls on the API with the date initialized
     def get
-        url = "https://api.nytimes.com/svc/books/v3/lists/#{@date}/combined-print-and-e-book-fiction.json?api-key=#{API_KEY}"
+        url = "https://api.nytimes.com/svc/books/v3/lists/#{@date}/combined-print-and-e-book-fiction.json?api-key=#{ENV["API_KEY"]}"
         uri = URI.parse(url)
         response = Net::HTTP.get_response(uri)
         response_hash = JSON.parse(response.body)
         response_hash["results"]["books"]
-    rescue 
-        "Invalid date"
     end
 
 

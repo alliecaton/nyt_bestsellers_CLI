@@ -1,6 +1,6 @@
 class NytCli::Book
 
-    attr_accessor :title, :author, :rank, :description, :buy_links, :ranks_history
+    attr_accessor :title, :author, :rank, :description, :buy_links
 
     @@all = [] ## All book instances
     @@all_selected = [] ## All book instances that the user has viewed
@@ -50,15 +50,7 @@ class NytCli::Book
             end
         end
     end
-
-    # def self.list_name_from_history(book)
-    #     book.ranks_history[0].map {|key,value| value if key == "list_name"}.compact.join.to_s
-    # end
-
-    # def self.rank_name_from_history(book)
-    #     book.ranks_history[0].map {|key,value| value if key == "rank"}.compact.join.to_s
-    # end
-
+    
     def self.reset!
         @@all.clear
     end
