@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby 
 require './lib/nyt_cli'
 
-NytCli::Cli.new.start
+new = NytCli::Cli.new
+new.start
