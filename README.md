@@ -27,19 +27,19 @@ Use NytCLI to retrieve information about fiction books on the New York Times Bes
 
 Get a list of books that appear on the New York Times Bestsellers list for a given date
 
-![](demo_materials/gif1.gif)
+![Demo Gif](demo/gif1.gif)
 
 Get more information about any given book on a list you search for 
 
-![](demo_materials/gif2.gif)
+![Demo Gif](demo/gif2.gif)
 
 Launch a link to buy any given book straight from within the application
 
-![](demo_materials/gif3.gif)
+![Demo Gif](demo/gif3.gif)
 
 Save and view books to an easily accessible collection
 
-![](demo_materials/gif4.gif)
+![Demo Gif](demo/gif4.gif)
 
 Happy book hunting! 📚 
 
