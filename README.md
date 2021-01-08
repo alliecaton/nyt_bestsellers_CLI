@@ -13,17 +13,35 @@ Welcome to your new gem! In this directory, you'll find the files you need to be
 gem 'nyt_cli'
 ``` -->
 
-And then execute:
+<!-- And then execute:
 
-    $ bundle install
+    $ bundle install -->
 
-Or install it yourself as:
+To install, run:
 
     $ gem install nyt_cli
 
 ## Usage
 
-TODO: Write usage instructions here
+Use NytCLI to retrieve information about fiction books on the New York Times Bestsellers list for a given date! 
+
+Get a list of books that appear on the New York Times Bestsellers list for a given date
+
+![](gif1.gif)
+
+Get more information about any given book on a list you search for 
+
+![](gif2.gif)
+
+Launch a link to buy any given book straight from within the application
+
+![](gif3.gif)
+
+Save and view books to an easily accessible collection
+
+![](gif4.gif)
+
+Happy book hunting! 📚 
 
 ## Development
 
