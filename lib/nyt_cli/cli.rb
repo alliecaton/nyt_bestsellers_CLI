@@ -22,6 +22,7 @@ class NytCli::Cli
         when "1"
             get_date
         when "2"
+            puts "\n"
             view_saved
         when "3"
             exit! 
@@ -38,7 +39,6 @@ class NytCli::Cli
         date = gets.chomp
         if valid_date?(date) && valid_timeframe?(date)
             create_api_and_book(date)
-            @@viewed_dates << date
         end
     end
 
@@ -99,10 +99,9 @@ class NytCli::Cli
     def view_saved
         if  NytCli::Book.collection.count != 0
              NytCli::Book.collection.uniq.each.with_index(1) do |book,index|
-                binding.pry
-                puts "\n[#{index}]  ".green + "#{book.title.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")} - #{book.author}".white
-                collection_options
+                puts "[#{index}]  ".green + "#{book.title.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")} - #{book.author}".white
              end
+            collection_options
         else 
             puts "\n#{@@emojis[0]} You have no saved books #{@@emojis[0]}\n\n"
             sleep(1)
@@ -112,12 +111,13 @@ class NytCli::Cli
 
     def collection_options
         puts "\n\nIf you would like more information on any of your saved books, input the number associated with the book you would like to view"
-        input = gets.chomp.to_i
+        num = gets.chomp.to_i
         if num.between?(1,NytCli::Book.collection.count)
-            show_from_collection(input)
+            show_from_collection(num)
         end
     end
 
+    ## Show individual chosen book from collection 
     def show_from_collection(num)
         chosen_book = NytCli::Book.collection[num - 1]
         NytCli::Book.all_viewed << chosen_book
@@ -189,6 +189,7 @@ class NytCli::Cli
         end
     end
 
+    ## Links out to a B&N link for selected book 
     def buy_book(title)
         # current_book = NytCli::Book.all_viewed.last
         current_book = NytCli::Book.find_by_title (title)
@@ -200,10 +201,11 @@ class NytCli::Cli
         end 
     end
 
+    ## Adds book to collection for the session 
     def add_to_collection
         NytCli::Book.collection << NytCli::Book.all_viewed.last
         puts "\nYou've added " + "#{NytCli::Book.all_viewed.last.title.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")} ".blue + "to your saved collection for the session.\n\n"
-        sleep(2)
+        sleep(1)
         self.ask
     end
 
