@@ -17,9 +17,9 @@ gem 'nyt_cli'
 
     $ bundle install -->
 
-To install, run:
+To install, clone this repository and navigate to:
 
-    $ gem install nyt_cli
+    $ cd nyt_bestsellers_CLI
 
 Navigate to the gem and run: 
 

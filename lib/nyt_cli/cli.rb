@@ -19,7 +19,7 @@ class NytCli::Cli
         puts "[1]  ".yellow + "Get fiction bestsellers list for a given date"
         puts "[2]  ".yellow + "View your saved books"
         puts "[3]  ".yellow + "Exit the application\n\n"
-        input = gets.chomp.downcase.strip
+        input = gets.chomp.downcase
 
         case input 
         when "1"
@@ -135,7 +135,7 @@ class NytCli::Cli
         puts "[2]  ".yellow + "Buy book"
         puts "[3]  ".yellow + "Return to main menu"
         puts "[4]  ".yellow + "Exit the application\n\n"
-        input = gets.chomp.downcase.strip
+        input = gets.chomp.downcase
 
         case input 
         when "1"
@@ -171,7 +171,7 @@ class NytCli::Cli
         puts "[3]  ".yellow + "Add book to session collection"
         puts "[4]  ".yellow + "Return to main menu"
         puts "[5]  ".yellow + "Exit the application\n\n"
-        input = gets.chomp.downcase.strip
+        input = gets.chomp.downcase
 
         case input 
         when "1"
